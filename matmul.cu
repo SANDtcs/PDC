@@ -8,6 +8,19 @@ Matrix Multiplication
 using namespace std;
 
 
+__global__ void matTranspose(int* a, int n) {
+	int row = blockIdx.y * blockDim.y + threadIdx.y;
+	int col = blockIdx.x * blockDim.x + threadIdx.x;
+
+	if (row < n && col < n && row != col && row < col) {
+		int temp = a[row * n + col];
+		a[row * n + col] = a[col * n + row];
+		a[col * n + row] = temp;
+	}
+}
+
+
+
 __global__ void gpu_matrix_transpose(int* mat_in, int* mat_out, unsigned int rows, unsigned int cols) 
 {
     unsigned int idx = blockIdx.x * blockDim.x + threadIdx.x;
